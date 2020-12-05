@@ -1,44 +1,56 @@
 import React, { useState, useEffect,useRef,useContext } from 'react';
+import { TextInput,Button, Text,View } from 'react-native';
+import {myContext} from './myContext'
+import { FormattedMessage  } from 'react-intl';
+export default function Chat() {
+	
+	const usr= useRef()
+	const pwd= useRef()
+	const msg= useRef()
+	const board= useRef()
+	const [state, dispatch] = useContext(myContext);
 
-function Chat() {
-
-	const chess = useContext(gameData);
-
-	useEffect(() => {
-		//pos.current.style={marginLeft:'0px',marginTop:'0px'}
-		console.log('init...')
-	},chess.maps);  // 訂閱刷新棋圖
-
+	useEffect(() => {  //自刷對話區
+		board.current.value+=state.msg
+	},[state.msg]);  // 訂閱更新
 
 	function sendlogin() {
-	var packet = {cmd:"login"};
-	packet.usr=$("#usr").val();
-	ws.send(JSON.stringify(packet));  
+	var packet = {type:"login",
+	usr:usr.current.value,
+	pwd:pwd.current.value,
+	};
+	dispatch(packet)
 	}
 
 	function sendmsg() {
-	var packet = {cmd:"chat"};
-	packet.msg=$("#msg").val();
-	$("#msg").val('');
-	ws.send(JSON.stringify(packet));  
+		var packet = {type:"chat",
+		msg:msg.current.value,
+		};
+		msg.current.value=''
+		dispatch(packet)		
 	}
 
 	function wsclose(){
-	ws.close();
+		var packet = {type:"quit" };
+		dispatch(packet)
 	}
 
 	return (
-	<div>
-	<input id='pos' type="text" />
-	<input id='pos' type="password" />
-	<input id='pos' type="button" value='登入' />
-	<input id='pos' type="button" value='離線' />
-	<hr />	
-	<textarea id='pos' cols="50" rows="5">
-	</textarea>
-	<input id='pos' type="text" />
-	<input id='pos' type="button" value='送出' />
-	</div>
+	<View>
+	<FormattedMessage  id="app.learn" />
+	<Text>帳號</Text>
+	<TextInput id='usr' ref={usr} />
+	<Text>密碼</Text>
+	<TextInput id='pwd' ref={pwd} />
+	<Button id='login' title='登入' onPress={sendlogin} />
+	<Button id='logout'  title='離線' onPress={wsclose} />
+
+	
+	<TextInput id='board' ref={board} cols="50" rows="5" multiline='true' />
+	<Text>===對話區===</Text>
+	<TextInput id='msg' ref={msg} />
+	<Button id='pos' title='送訊' onPress={sendmsg}  />
+	</View>
 	)
 }
-export default Chat
+

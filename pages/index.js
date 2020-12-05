@@ -1,21 +1,14 @@
 import Head from 'next/head'
 import Link from 'next/link'
-/*
-import GlobalHook  from './class/GlobalHook'
-import WebSocket from './class/WebSocket'
+import { useReducer } from 'react'
+import {initState,myContext,reducer}  from './class/myContext'
+import WSclient from './class/WebSocket'
 import Chat from './class/Chat'
 import I18n from './class/I18n'
-*/
-
 function HomePage() {
-/*
-    <GlobalHook>
-    <I18n>
-    <WebSocket />
-    <Chat />
-    </I18n>
-    </GlobalHook>
-*/
+/* <WSclient server="ws://localhost:88" /> */
+  const args = useReducer(reducer,initState);
+
     return (
      <div>
     <Head>
@@ -23,8 +16,15 @@ function HomePage() {
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
     <p><Link href="/about?a=1&b=我"><a>here</a></Link></p>
-
-  </div>
+    
+   <myContext.Provider value={args}>
+   <I18n>
+   <WSclient server="ws://localhost:88" />
+   <Chat />
+  
+  </I18n>
+  </myContext.Provider>
+     </div>
    )
 }
   
