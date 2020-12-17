@@ -1,4 +1,4 @@
-import React from 'react';
+import  React,{useReducer } from 'react'
 
 export const initState = {
   cmd: '',  //指令
@@ -8,20 +8,22 @@ export const initState = {
 export const myContext= React.createContext();
 export const reducer =(state, action) =>{
     switch (action.type) {
-      case 'login':
-        state.cmd=JSON.stringify(action)
-        return state;
-
       case 'chat':
-        state.cmd=JSON.stringify(action)
-        return state;
-      case 'quit':
-        state.cmd=JSON.stringify(action)
-        return state;
+        console.log("reducer前:"+JSON.stringify(state))
+        //注意! 不能直接改值在原來state上, useEffect的更新是認變數位址的!!
+        var newState = JSON.parse(JSON.stringify(state));
+        //所以要先copy一份 newState
+        newState.cmd=JSON.stringify(action)
+        console.log("reducer後:"+JSON.stringify(newState))
+        return newState;
         
       case 'msg':
-        state.cmd=JSON.stringify(action)
-        return state
+        //注意! 不能直接改值在原來state上, useEffect的更新是認變數位址的!!
+        var newState2 = JSON.parse(JSON.stringify(state));
+        //所以要先copy一份 newState
+        newState2.msg=JSON.stringify(action.msg)
+        return newState2
+
       case 'sys':
         console.log(action.prompt)
         return state  
@@ -30,3 +32,16 @@ export const reducer =(state, action) =>{
         //throw new Error();
     }
 }
+
+function Provider(props) {
+  const [state, dispatch] = useReducer(reducer,initState);
+    return (
+     <div>
+   <myContext.Provider value={{data:state, call:dispatch}}>
+   {props.children}
+  </myContext.Provider>
+     </div>
+   )
+}
+export default Provider
+

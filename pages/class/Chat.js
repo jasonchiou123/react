@@ -8,31 +8,20 @@ export default function Chat() {
 	const pwd= useRef()
 	const msg= useRef()
 	const board= useRef()
-	const [state, dispatch] = useContext(myContext);
+	const cnt = useContext(myContext);
 
 	useEffect(() => {  //自刷對話區
-		board.current.value+=state.msg
-	},[state.msg]);  // 訂閱更新
-
-	function sendlogin() {
-	var packet = {type:"login",
-	usr:usr.current.value,
-	pwd:pwd.current.value,
-	};
-	dispatch(packet)
-	}
+		board.current.value+=cnt.data.msg
+	},[cnt.data.msg]);  // 訂閱更新
 
 	function sendmsg() {
 		var packet = {type:"chat",
 		msg:msg.current.value,
 		};
 		msg.current.value=''
-		dispatch(packet)		
-	}
-
-	function wsclose(){
-		var packet = {type:"quit" };
-		dispatch(packet)
+		cnt.call(packet)		
+		
+		//console.log("mydata:"+JSON.stringify(mydata))
 	}
 
 	return (
@@ -42,8 +31,8 @@ export default function Chat() {
 	<TextInput id='usr' ref={usr} />
 	<Text>密碼</Text>
 	<TextInput id='pwd' ref={pwd} />
-	<Button id='login' title='登入' onPress={sendlogin} />
-	<Button id='logout'  title='離線' onPress={wsclose} />
+	<Button id='login' title='登入' />
+	<Button id='logout'  title='離線'  />
 
 	
 	<TextInput id='board' ref={board} cols="50" rows="5" multiline='true' />
