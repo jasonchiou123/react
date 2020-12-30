@@ -14,7 +14,7 @@ function HomePage() {
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
     <p><Link href="/about?a=1&b=我"><a>here</a></Link></p>
-    
+    以下是TEST
    <Provider>
    <I18n>
    <WSclient server="ws://localhost:88" />
